@@ -1,0 +1,14 @@
+{
+  "name": "HackUTD22",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "author": "Trevor R <tjdoescode@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "run": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongodb": "^4.11.0"
+  }
+}
