@@ -1,4 +1,12 @@
 const Room = require('../models/room.model');
+const Occupant = require('../models/occupant.model');
+
+exports.getRoom = async (req, res) => {
+	const name = req.params.name;
+	const room = await Room.find({ name });
+	if (!room) return res.status(404).send(`Room ${name} not found`);
+	res.send(room);
+};
 
 exports.getAllRooms = async (req, res) => {
 	res.send(await Room.find({}));
@@ -34,4 +42,26 @@ exports.updateRoom = async (req, res) => {
 
 		res.status(200).send(`updated ${name} successfully`);
 	});
+};
+
+exports.addOccupant = async (req, res) => {
+	const body = req.body;
+	const roomName = req.params.name;
+
+	const room = Room.find({ name: roomName });
+	const dbOccupant = Occupant.find({
+		name: body.name ? body.name : undefined,
+		mavId: body.mavId ? body.mavId : undefined,
+	});
+	const newOccupant = {
+		name: body.name ?? 'undefined',
+		mavId: body.mavId ?? 'undefined',
+		type: 2,
+	};
+
+	if (!room) return res.status(404).send(`Could not find room ${roomName}`);
+
+	const occupants = await room.select('occupants').exec();
+	occupants.push(dbOccupant ?? newOccupant);
+	Room.updateOne({ name: roomName }, occupants);
 };
